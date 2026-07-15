@@ -1,5 +1,12 @@
 # OT-Asset-Discovery
 
+## About
+
+This repository is being developed as a long-term open-source project focused on industrial asset discovery, protocol analysis, and OT security research.
+
+Contributions, suggestions, and discussions are welcome.
+
+
 ## Overview
 
 OT-Asset-Discovery is an open-source project focused on discovering, identifying, and fingerprinting Industrial Control System (ICS) and Operational Technology (OT) assets using passive and active network analysis.
