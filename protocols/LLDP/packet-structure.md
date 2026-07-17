@@ -135,3 +135,14 @@ Marks the end of the LLDP packet.
 LLDP provides valuable metadata that enables passive OT asset discovery without generating active network traffic.
 
 When available, it is one of the safest methods for identifying industrial assets.
+
+
+# Field Observations
+
+During my laboratory analysis:
+
+- Siemens S7-1200 devices advertise detailed LLDP information including model, firmware and system description.
+- Some WAGO devices may not transmit LLDP packets, limiting passive identification using this protocol.
+- LLDP support varies between industrial vendors and device families.
+
+This reinforces the importance of combining LLDP with other industrial protocols such as Profinet DCP, EtherNet/IP, Modbus TCP and SNMP for comprehensive OT asset discovery.
