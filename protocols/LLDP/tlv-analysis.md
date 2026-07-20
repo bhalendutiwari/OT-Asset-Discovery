@@ -153,3 +153,9 @@ These four TLVs often provide enough information to identify an industrial asset
 # Conclusion
 
 TLVs make LLDP one of the richest passive discovery protocols available in industrial Ethernet networks. However, because vendor implementations differ, LLDP should be combined with additional industrial protocols for complete asset visibility.
+
+# Practical Example
+
+During testing, Siemens S7-1200 devices exposed multiple LLDP TLVs including System Name and System Description, making passive identification straightforward.
+
+Some industrial devices transmitted only the mandatory TLVs, while others did not advertise LLDP at all. This demonstrates why multiple discovery techniques are required in real OT environments.
