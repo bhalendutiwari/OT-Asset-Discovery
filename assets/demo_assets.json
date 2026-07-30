@@ -1,0 +1,29 @@
+[
+    {
+        "Vendor": "Siemens",
+        "Model": "S7-1200",
+        "Protocol": "LLDP",
+        "IP Address": "192.168.1.10",
+        "MAC Address": "00:0E:8C:12:34:56",
+        "Firmware": "V4.5",
+        "Status": "Online"
+    },
+    {
+        "Vendor": "WAGO",
+        "Model": "750-8212",
+        "Protocol": "LLDP",
+        "IP Address": "192.168.1.20",
+        "MAC Address": "00:30:DE:AA:BB:CC",
+        "Firmware": "03.01",
+        "Status": "Online"
+    },
+    {
+        "Vendor": "Phoenix Contact",
+        "Model": "FL SWITCH 2306",
+        "Protocol": "LLDP",
+        "IP Address": "192.168.1.30",
+        "MAC Address": "00:A0:45:11:22:33",
+        "Firmware": "2.7",
+        "Status": "Online"
+    }
+]
