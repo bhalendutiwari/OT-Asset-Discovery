@@ -1,11 +1,14 @@
 from scapy.all import rdpcap
 from scapy.layers.l2 import Ether
 
+from scripts.lldp.lldp_parser import LLDPParser
+
 
 class PacketParser:
 
     def __init__(self, pcap_file):
         self.pcap_file = pcap_file
+        self.lldp_parser = LLDPParser()
 
     def load_packets(self):
 
@@ -45,23 +48,23 @@ class PacketParser:
         print("Destination MAC :", dst_mac)
         print("EtherType       :", hex(ethertype))
 
-        self.detect_protocol(ethertype)
+        self.detect_protocol(packet, ethertype)
 
-    def detect_protocol(self, ethertype):
+    def detect_protocol(self, packet, ethertype):
 
         if ethertype == 0x0800:
-            protocol = "IPv4"
+            print("Protocol        : IPv4")
 
         elif ethertype == 0x0806:
-            protocol = "ARP"
+            print("Protocol        : ARP")
 
         elif ethertype == 0x86DD:
-            protocol = "IPv6"
+            print("Protocol        : IPv6")
 
         elif ethertype == 0x88CC:
-            protocol = "LLDP"
+            print("Protocol        : LLDP")
+
+            self.lldp_parser.parse(packet)
 
         else:
-            protocol = "Unknown"
-
-        print("Protocol        :", protocol)
+            print("Protocol        : Unknown")
