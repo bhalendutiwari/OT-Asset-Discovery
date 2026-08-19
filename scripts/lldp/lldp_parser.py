@@ -7,19 +7,27 @@ class LLDPParser:
 
         print("\nLLDP Packet Detected")
 
-        self.parse_chassis_id()
-        self.parse_port_id()
-        self.parse_system_name()
-        self.parse_management_address()
+        asset = {
+            "chassis_id": self.parse_chassis_id(packet),
+            "port_id": self.parse_port_id(packet),
+            "system_name": self.parse_system_name(packet),
+            "system_description": self.parse_system_description(packet),
+            "management_address": self.parse_management_address(packet)
+        }
 
-    def parse_chassis_id(self):
-        print("Parsing Chassis ID...")
+        return asset
 
-    def parse_port_id(self):
-        print("Parsing Port ID...")
+    def parse_chassis_id(self, packet):
+        return None
 
-    def parse_system_name(self):
-        print("Parsing System Name...")
+    def parse_port_id(self, packet):
+        return None
 
-    def parse_management_address(self):
-        print("Parsing Management Address...")
+    def parse_system_name(self, packet):
+        return None
+
+    def parse_system_description(self, packet):
+        return None
+
+    def parse_management_address(self, packet):
+        return None

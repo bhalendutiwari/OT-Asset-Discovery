@@ -1,5 +1,12 @@
 from scripts.lldp.lldp_parser import LLDPParser
 
+
 parser = LLDPParser()
 
-parser.parse(None)
+asset = parser.parse(None)
+
+print("\nDiscovered Asset")
+print("================")
+
+for key, value in asset.items():
+    print(f"{key:<25}: {value}")
