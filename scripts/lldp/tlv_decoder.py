@@ -42,3 +42,41 @@ class LLDPDecoder:
             "length": tlv_length,
             "value": value
         }
+
+    def decode_all(self, data):
+
+        tlvs = []
+        offset = 0
+
+        while offset + 2 <= len(data):
+
+            header = int.from_bytes(
+                data[offset:offset + 2],
+                byteorder="big"
+            )
+
+            tlv_type, tlv_length = self.decode_header(header)
+
+            if offset + 2 + tlv_length > len(data):
+                raise ValueError("Incomplete TLV data")
+
+            value_start = offset + 2
+            value_end = value_start + tlv_length
+
+            value = data[value_start:value_end]
+
+            tlv = {
+                "type": tlv_type,
+                "name": self.decode_type(tlv_type),
+                "length": tlv_length,
+                "value": value
+            }
+
+            tlvs.append(tlv)
+
+            offset = value_end
+
+            if tlv_type == 0:
+                break
+
+        return tlvs
