@@ -3,8 +3,8 @@ from scapy.all import Ether, Raw
 from scripts.lldp.lldp_parser import LLDPParser
 
 
-print("LLDP Real Packet Test")
-print("=====================")
+print("LLDP Complete Asset Test")
+print("========================")
 
 
 # -------------------------------------------------
@@ -37,6 +37,56 @@ ttl_tlv = bytes.fromhex(
 
 
 # -------------------------------------------------
+# System Name TLV
+# -------------------------------------------------
+#
+# Type   = 5
+# Length = 6
+# Value  = PLC-01
+#
+# Header = 0x0A06
+
+system_name_tlv = bytes.fromhex(
+    "0A 06"
+) + b"PLC-01"
+
+
+# -------------------------------------------------
+# System Description TLV
+# -------------------------------------------------
+#
+# Type   = 6
+# Length = 19
+# Value  = Siemens S7-1500 PLC
+#
+# Header = 0x0C13
+
+system_description_tlv = bytes.fromhex(
+    "0C 13"
+) + b"Siemens S7-1500 PLC"
+
+
+# -------------------------------------------------
+# Management Address TLV
+# -------------------------------------------------
+#
+# Type   = 8
+#
+# Address String Length = 5
+# Address Subtype       = 1 (IPv4)
+# Address               = 192.168.1.10
+#
+# Header = 0x1005
+
+management_tlv = bytes.fromhex(
+    "10 06"
+    "05"
+    "01"
+    "C0 A8 01 0A"
+)
+
+
+# -------------------------------------------------
 # End of LLDPDU
 # -------------------------------------------------
 
@@ -51,6 +101,9 @@ lldp_payload = (
     chassis_tlv
     + port_tlv
     + ttl_tlv
+    + system_name_tlv
+    + system_description_tlv
+    + management_tlv
     + end_tlv
 )
 
