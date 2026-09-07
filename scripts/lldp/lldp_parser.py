@@ -11,8 +11,43 @@ class LLDPParser:
 
         print("\nLLDP Packet Detected")
 
+        if packet is None:
+            return self.parse_synthetic_data()
+
+        return self.parse_packet(packet)
+
+    def parse_packet(self, packet):
+
+        # LLDP EtherType = 0x88CC
+
+        raw_payload = bytes(packet.payload)
+
+        print(
+            "LLDP Payload Length :",
+            len(raw_payload)
+        )
+
+        tlvs = self.decoder.decode_all(
+            raw_payload
+        )
+
+        print("\nLLDP TLVs")
+        print("---------")
+
+        for tlv in tlvs:
+
+            print(
+                f"Type {tlv['type']}: "
+                f"{tlv['name']} "
+                f"(Length {tlv['length']})"
+            )
+
+        return tlvs
+
+    def parse_synthetic_data(self):
+
         # Synthetic LLDP data for development.
-        # Real packet extraction will be added later.
+        # Real packet extraction is handled by parse_packet().
 
         chassis_value = (
             bytes([4])
@@ -31,14 +66,6 @@ class LLDPParser:
         system_description_value = (
             b"Siemens S7-1500 PLC"
         )
-
-        # Management Address:
-        #
-        # Address String Length = 5
-        # Address Subtype       = 1 (IPv4)
-        # Address               = 192.168.1.10
-        #
-        # The remaining fields are not yet decoded.
 
         management_value = (
             bytes([5])
