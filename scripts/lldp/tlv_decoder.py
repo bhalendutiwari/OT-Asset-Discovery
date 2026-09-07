@@ -222,3 +222,46 @@ class LLDPDecoder:
 
         except UnicodeDecodeError:
             return value.hex()
+
+    def decode_management_address(self, value):
+
+        if len(value) < 1:
+            raise ValueError(
+                "Management Address value is empty"
+            )
+
+        address_string_length = value[0]
+
+        if len(value) < 1 + address_string_length:
+            raise ValueError(
+                "Incomplete Management Address"
+            )
+
+        address_data = value[
+            1:1 + address_string_length
+        ]
+
+        if len(address_data) < 1:
+            raise ValueError(
+                "Management Address is missing address subtype"
+            )
+
+        address_subtype = address_data[0]
+
+        address = address_data[1:]
+
+        if address_subtype == 1 and len(address) == 4:
+
+            ip_address = ".".join(
+                str(byte)
+                for byte in address
+            )
+
+        else:
+
+            ip_address = address.hex()
+
+        return {
+            "address_subtype": address_subtype,
+            "address": ip_address
+        }

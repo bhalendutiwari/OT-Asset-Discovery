@@ -32,6 +32,20 @@ class LLDPParser:
             b"Siemens S7-1500 PLC"
         )
 
+        # Management Address:
+        #
+        # Address String Length = 5
+        # Address Subtype       = 1 (IPv4)
+        # Address               = 192.168.1.10
+        #
+        # The remaining fields are not yet decoded.
+
+        management_value = (
+            bytes([5])
+            + bytes([1])
+            + bytes([192, 168, 1, 10])
+        )
+
         chassis_id = self.decoder.decode_chassis_id(
             chassis_value
         )
@@ -54,12 +68,18 @@ class LLDPParser:
             )
         )
 
+        management_address = (
+            self.decoder.decode_management_address(
+                management_value
+            )
+        )
+
         asset = {
             "chassis_id": chassis_id["identifier"],
             "port_id": port_id["identifier"],
             "system_name": system_name,
             "system_description": system_description,
-            "management_address": None,
+            "management_address": management_address["address"],
             "ttl": ttl
         }
 
