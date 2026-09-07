@@ -31,6 +31,15 @@ class LLDPParser:
             raw_payload
         )
 
+        asset = {
+            "chassis_id": None,
+            "port_id": None,
+            "system_name": None,
+            "system_description": None,
+            "management_address": None,
+            "ttl": None
+        }
+
         print("\nLLDP TLVs")
         print("---------")
 
@@ -42,7 +51,70 @@ class LLDPParser:
                 f"(Length {tlv['length']})"
             )
 
-        return tlvs
+            tlv_type = tlv["type"]
+            value = tlv["value"]
+
+            if tlv_type == 1:
+
+                chassis_id = (
+                    self.decoder.decode_chassis_id(
+                        value
+                    )
+                )
+
+                asset["chassis_id"] = (
+                    chassis_id["identifier"]
+                )
+
+            elif tlv_type == 2:
+
+                port_id = (
+                    self.decoder.decode_port_id(
+                        value
+                    )
+                )
+
+                asset["port_id"] = (
+                    port_id["identifier"]
+                )
+
+            elif tlv_type == 3:
+
+                asset["ttl"] = (
+                    self.decoder.decode_ttl(
+                        value
+                    )
+                )
+
+            elif tlv_type == 5:
+
+                asset["system_name"] = (
+                    self.decoder.decode_system_name(
+                        value
+                    )
+                )
+
+            elif tlv_type == 6:
+
+                asset["system_description"] = (
+                    self.decoder.decode_system_description(
+                        value
+                    )
+                )
+
+            elif tlv_type == 8:
+
+                management_address = (
+                    self.decoder.decode_management_address(
+                        value
+                    )
+                )
+
+                asset["management_address"] = (
+                    management_address["address"]
+                )
+
+        return asset
 
     def parse_synthetic_data(self):
 

@@ -7,23 +7,9 @@ print("LLDP Real Packet Test")
 print("=====================")
 
 
-# Create a synthetic LLDP Ethernet frame.
-#
-# EtherType 0x88CC = LLDP
-
-
 # -------------------------------------------------
 # Chassis ID TLV
 # -------------------------------------------------
-#
-# Type   = 1
-# Length = 7
-#
-# Value:
-# Subtype = 4 (MAC Address)
-# MAC     = 00:11:22:33:44:55
-#
-# TLV header = 0x0207
 
 chassis_tlv = bytes.fromhex(
     "02 07"
@@ -34,15 +20,6 @@ chassis_tlv = bytes.fromhex(
 # -------------------------------------------------
 # Port ID TLV
 # -------------------------------------------------
-#
-# Type   = 2
-# Length = 20
-#
-# Value:
-# Subtype = 5 (Interface Name)
-# Name    = GigabitEthernet1/0/1
-#
-# TLV header = 0x0414
 
 port_tlv = bytes.fromhex(
     "04 15"
@@ -52,12 +29,6 @@ port_tlv = bytes.fromhex(
 # -------------------------------------------------
 # TTL TLV
 # -------------------------------------------------
-#
-# Type   = 3
-# Length = 2
-# Value  = 120 seconds
-#
-# TLV header = 0x0602
 
 ttl_tlv = bytes.fromhex(
     "06 02"
@@ -68,14 +39,13 @@ ttl_tlv = bytes.fromhex(
 # -------------------------------------------------
 # End of LLDPDU
 # -------------------------------------------------
-#
-# Type   = 0
-# Length = 0
 
 end_tlv = bytes.fromhex(
     "00 00"
 )
 
+
+# Build complete LLDP payload
 
 lldp_payload = (
     chassis_tlv
@@ -84,6 +54,8 @@ lldp_payload = (
     + end_tlv
 )
 
+
+# Build Ethernet frame
 
 packet = Ether(
     src="00:11:22:33:44:55",
@@ -94,17 +66,25 @@ packet = Ether(
 )
 
 
+# Create parser
+
 parser = LLDPParser()
 
+
+# Parse packet
 
 result = parser.parse(
     packet
 )
 
 
-print("\nParser Result")
-print("=============")
+# Display discovered asset
 
-for item in result:
+print("\nDiscovered Asset")
+print("================")
 
-    print(item)
+for key, value in result.items():
+
+    print(
+        f"{key:<25}: {value}"
+    )
