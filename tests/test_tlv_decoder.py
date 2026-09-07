@@ -3,32 +3,31 @@ from scripts.lldp.tlv_decoder import LLDPDecoder
 
 decoder = LLDPDecoder()
 
-print("LLDP Chassis ID Decoder Test")
-print("============================")
+
+print("LLDP Port ID Decoder Test")
+print("=========================")
 
 
-# Chassis ID subtype:
-# 4 = MAC Address
+# Port ID subtype:
+# 5 = Interface Name
 
-chassis_subtype = bytes([4])
+port_subtype = bytes([5])
 
-chassis_mac = bytes.fromhex(
-    "00 11 22 33 44 55"
-)
+port_name = b"GigabitEthernet1/0/1"
 
-chassis_value = (
-    chassis_subtype
-    + chassis_mac
-)
-
-
-result = decoder.decode_chassis_id(
-    chassis_value
+port_value = (
+    port_subtype
+    + port_name
 )
 
 
-print("\nDecoded Chassis ID")
-print("------------------")
+result = decoder.decode_port_id(
+    port_value
+)
+
+
+print("\nDecoded Port ID")
+print("----------------")
 
 print(
     "Subtype      :",

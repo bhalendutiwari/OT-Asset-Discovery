@@ -22,6 +22,16 @@ class LLDPDecoder:
         7: "Locally Assigned"
     }
 
+    PORT_ID_SUBTYPES = {
+        1: "Interface Alias",
+        2: "Port Component",
+        3: "MAC Address",
+        4: "Network Address",
+        5: "Interface Name",
+        6: "Agent Circuit ID",
+        7: "Locally Assigned"
+    }
+
     def decode_type(self, tlv_type):
         return self.TLV_TYPES.get(tlv_type, "Unknown")
 
@@ -35,7 +45,9 @@ class LLDPDecoder:
     def decode(self, data):
 
         if len(data) < 2:
-            raise ValueError("TLV data must contain at least 2 bytes")
+            raise ValueError(
+                "TLV data must contain at least 2 bytes"
+            )
 
         header = int.from_bytes(
             data[:2],
@@ -45,7 +57,9 @@ class LLDPDecoder:
         tlv_type, tlv_length = self.decode_header(header)
 
         if len(data) < 2 + tlv_length:
-            raise ValueError("TLV data is shorter than declared length")
+            raise ValueError(
+                "TLV data is shorter than declared length"
+            )
 
         value = data[2:2 + tlv_length]
 
@@ -71,7 +85,9 @@ class LLDPDecoder:
             tlv_type, tlv_length = self.decode_header(header)
 
             if offset + 2 + tlv_length > len(data):
-                raise ValueError("Incomplete TLV data")
+                raise ValueError(
+                    "Incomplete TLV data"
+                )
 
             value_start = offset + 2
             value_end = value_start + tlv_length
@@ -111,6 +127,44 @@ class LLDPDecoder:
         identifier = value[1:]
 
         if subtype == 4 and len(identifier) == 6:
+
+            identifier_value = ":".join(
+                f"{byte:02x}"
+                for byte in identifier
+            )
+
+        else:
+
+            try:
+                identifier_value = identifier.decode(
+                    "utf-8"
+                )
+            except UnicodeDecodeError:
+                identifier_value = identifier.hex()
+
+        return {
+            "subtype": subtype,
+            "subtype_name": subtype_name,
+            "identifier": identifier_value
+        }
+
+    def decode_port_id(self, value):
+
+        if len(value) < 2:
+            raise ValueError(
+                "Port ID value must contain a subtype and identifier"
+            )
+
+        subtype = value[0]
+
+        subtype_name = self.PORT_ID_SUBTYPES.get(
+            subtype,
+            "Unknown"
+        )
+
+        identifier = value[1:]
+
+        if subtype == 3 and len(identifier) == 6:
 
             identifier_value = ":".join(
                 f"{byte:02x}"
