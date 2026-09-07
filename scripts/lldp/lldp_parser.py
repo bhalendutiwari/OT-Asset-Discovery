@@ -11,7 +11,7 @@ class LLDPParser:
 
         print("\nLLDP Packet Detected")
 
-        # For Lesson 12 we use synthetic LLDP data.
+        # Synthetic LLDP data for development.
         # Real packet extraction will be added later.
 
         chassis_value = (
@@ -24,6 +24,14 @@ class LLDPParser:
             + b"GigabitEthernet1/0/1"
         )
 
+        ttl_value = bytes.fromhex("00 78")
+
+        system_name_value = b"PLC-01"
+
+        system_description_value = (
+            b"Siemens S7-1500 PLC"
+        )
+
         chassis_id = self.decoder.decode_chassis_id(
             chassis_value
         )
@@ -32,12 +40,27 @@ class LLDPParser:
             port_value
         )
 
+        ttl = self.decoder.decode_ttl(
+            ttl_value
+        )
+
+        system_name = self.decoder.decode_system_name(
+            system_name_value
+        )
+
+        system_description = (
+            self.decoder.decode_system_description(
+                system_description_value
+            )
+        )
+
         asset = {
             "chassis_id": chassis_id["identifier"],
             "port_id": port_id["identifier"],
-            "system_name": None,
-            "system_description": None,
-            "management_address": None
+            "system_name": system_name,
+            "system_description": system_description,
+            "management_address": None,
+            "ttl": ttl
         }
 
         return asset

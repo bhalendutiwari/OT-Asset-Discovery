@@ -33,7 +33,10 @@ class LLDPDecoder:
     }
 
     def decode_type(self, tlv_type):
-        return self.TLV_TYPES.get(tlv_type, "Unknown")
+        return self.TLV_TYPES.get(
+            tlv_type,
+            "Unknown"
+        )
 
     def decode_header(self, header):
 
@@ -54,7 +57,9 @@ class LLDPDecoder:
             byteorder="big"
         )
 
-        tlv_type, tlv_length = self.decode_header(header)
+        tlv_type, tlv_length = self.decode_header(
+            header
+        )
 
         if len(data) < 2 + tlv_length:
             raise ValueError(
@@ -82,7 +87,9 @@ class LLDPDecoder:
                 byteorder="big"
             )
 
-            tlv_type, tlv_length = self.decode_header(header)
+            tlv_type, tlv_length = self.decode_header(
+                header
+            )
 
             if offset + 2 + tlv_length > len(data):
                 raise ValueError(
@@ -185,3 +192,33 @@ class LLDPDecoder:
             "subtype_name": subtype_name,
             "identifier": identifier_value
         }
+
+    def decode_ttl(self, value):
+
+        if len(value) != 2:
+            raise ValueError(
+                "TTL value must contain exactly 2 bytes"
+            )
+
+        ttl = int.from_bytes(
+            value,
+            byteorder="big"
+        )
+
+        return ttl
+
+    def decode_system_name(self, value):
+
+        try:
+            return value.decode("utf-8")
+
+        except UnicodeDecodeError:
+            return value.hex()
+
+    def decode_system_description(self, value):
+
+        try:
+            return value.decode("utf-8")
+
+        except UnicodeDecodeError:
+            return value.hex()
