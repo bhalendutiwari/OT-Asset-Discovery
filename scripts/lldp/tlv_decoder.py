@@ -12,6 +12,16 @@ class LLDPDecoder:
         8: "Management Address"
     }
 
+    CHASSIS_ID_SUBTYPES = {
+        1: "Chassis Component",
+        2: "Interface Alias",
+        3: "Port Component",
+        4: "MAC Address",
+        5: "Network Address",
+        6: "Interface Name",
+        7: "Locally Assigned"
+    }
+
     def decode_type(self, tlv_type):
         return self.TLV_TYPES.get(tlv_type, "Unknown")
 
@@ -27,7 +37,10 @@ class LLDPDecoder:
         if len(data) < 2:
             raise ValueError("TLV data must contain at least 2 bytes")
 
-        header = int.from_bytes(data[:2], byteorder="big")
+        header = int.from_bytes(
+            data[:2],
+            byteorder="big"
+        )
 
         tlv_type, tlv_length = self.decode_header(header)
 
@@ -80,3 +93,41 @@ class LLDPDecoder:
                 break
 
         return tlvs
+
+    def decode_chassis_id(self, value):
+
+        if len(value) < 2:
+            raise ValueError(
+                "Chassis ID value must contain a subtype and identifier"
+            )
+
+        subtype = value[0]
+
+        subtype_name = self.CHASSIS_ID_SUBTYPES.get(
+            subtype,
+            "Unknown"
+        )
+
+        identifier = value[1:]
+
+        if subtype == 4 and len(identifier) == 6:
+
+            identifier_value = ":".join(
+                f"{byte:02x}"
+                for byte in identifier
+            )
+
+        else:
+
+            try:
+                identifier_value = identifier.decode(
+                    "utf-8"
+                )
+            except UnicodeDecodeError:
+                identifier_value = identifier.hex()
+
+        return {
+            "subtype": subtype,
+            "subtype_name": subtype_name,
+            "identifier": identifier_value
+        }

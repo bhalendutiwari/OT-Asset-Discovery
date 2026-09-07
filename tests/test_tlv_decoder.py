@@ -3,71 +3,44 @@ from scripts.lldp.tlv_decoder import LLDPDecoder
 
 decoder = LLDPDecoder()
 
-print("Complete LLDPDU Decoder Test")
+print("LLDP Chassis ID Decoder Test")
 print("============================")
 
 
-def create_tlv(tlv_type, value):
+# Chassis ID subtype:
+# 4 = MAC Address
 
-    tlv_length = len(value)
+chassis_subtype = bytes([4])
 
-    header = (tlv_type << 9) | tlv_length
-
-    return header.to_bytes(2, byteorder="big") + value
-
-
-chassis_id = create_tlv(
-    1,
-    b"00:11:22:33:44:55"
+chassis_mac = bytes.fromhex(
+    "00 11 22 33 44 55"
 )
 
-port_id = create_tlv(
-    2,
-    b"Port-1"
-)
-
-ttl = create_tlv(
-    3,
-    (120).to_bytes(2, byteorder="big")
-)
-
-system_name = create_tlv(
-    5,
-    b"PLC-01"
-)
-
-system_description = create_tlv(
-    6,
-    b"Industrial PLC"
-)
-
-end_of_lldpdu = create_tlv(
-    0,
-    b""
+chassis_value = (
+    chassis_subtype
+    + chassis_mac
 )
 
 
-lldp_data = (
-    chassis_id
-    + port_id
-    + ttl
-    + system_name
-    + system_description
-    + end_of_lldpdu
+result = decoder.decode_chassis_id(
+    chassis_value
 )
 
 
-tlvs = decoder.decode_all(lldp_data)
+print("\nDecoded Chassis ID")
+print("------------------")
 
+print(
+    "Subtype      :",
+    result["subtype"]
+)
 
-print("\nDecoded TLVs")
-print("============")
+print(
+    "Subtype Name :",
+    result["subtype_name"]
+)
 
-for tlv in tlvs:
-
-    print(
-        f"Type   : {tlv['type']}\n"
-        f"Name   : {tlv['name']}\n"
-        f"Length : {tlv['length']}\n"
-        f"Value  : {tlv['value']}\n"
-    )
+print(
+    "Identifier   :",
+    result["identifier"]
+)
