@@ -197,10 +197,20 @@ def main():
         management_ip="192.168.1.1"
     )
 
-    packets = [
-        plc_packet,
-        switch_packet
-    ]
+    packets = []
+
+    # Simulate three LLDP advertisements
+    # from each device.
+
+    for _ in range(3):
+
+        packets.append(
+            plc_packet
+        )
+
+        packets.append(
+            switch_packet
+        )
 
     wrpcap(
         OUTPUT_FILE,
