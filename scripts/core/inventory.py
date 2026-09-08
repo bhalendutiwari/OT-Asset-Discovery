@@ -13,9 +13,39 @@ class AssetInventory:
         vendors = set()
 
         for asset in self.assets:
-            vendors.add(asset["Vendor"])
+
+            vendor = asset.get("Vendor")
+
+            if vendor:
+                vendors.add(vendor)
 
         return vendors
+
+    def show_assets(self):
+
+        print("\n====================================")
+        print("OT Asset Inventory")
+        print("====================================")
+
+        if not self.assets:
+            print("No assets discovered.")
+            return
+
+        for index, asset in enumerate(
+            self.assets,
+            start=1
+        ):
+
+            print(
+                f"\nAsset {index}"
+            )
+            print("------------------------------------")
+
+            for key, value in asset.items():
+
+                print(
+                    f"{key:<20}: {value}"
+                )
 
     def show_summary(self):
 
@@ -23,6 +53,25 @@ class AssetInventory:
         print("OT Asset Inventory Summary")
         print("====================================")
 
-        print(f"Total Assets : {self.total_assets()}")
-        print(f"Unique Vendors : {len(self.unique_vendors())}")
-        print("Vendor List :", ", ".join(sorted(self.unique_vendors())))
+        print(
+            f"Total Assets   : {self.total_assets()}"
+        )
+
+        print(
+            f"Unique Vendors : {len(self.unique_vendors())}"
+        )
+
+        vendors = self.unique_vendors()
+
+        if vendors:
+
+            print(
+                "Vendor List    :",
+                ", ".join(sorted(vendors))
+            )
+
+        else:
+
+            print(
+                "Vendor List    : None"
+            )

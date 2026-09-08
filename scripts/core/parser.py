@@ -9,6 +9,7 @@ class PacketParser:
     def __init__(self, pcap_file):
         self.pcap_file = pcap_file
         self.lldp_parser = LLDPParser()
+        self.discovered_assets = []
 
     def load_packets(self):
 
@@ -53,18 +54,31 @@ class PacketParser:
     def detect_protocol(self, packet, ethertype):
 
         if ethertype == 0x0800:
+
             print("Protocol        : IPv4")
 
         elif ethertype == 0x0806:
+
             print("Protocol        : ARP")
 
         elif ethertype == 0x86DD:
+
             print("Protocol        : IPv6")
 
         elif ethertype == 0x88CC:
+
             print("Protocol        : LLDP")
 
-            self.lldp_parser.parse(packet)
+            asset = self.lldp_parser.parse(packet)
+
+            if asset:
+
+                self.discovered_assets.append(asset)
 
         else:
+
             print("Protocol        : Unknown")
+
+    def get_discovered_assets(self):
+
+        return self.discovered_assets
