@@ -63,6 +63,11 @@ class LLDPParser:
                     chassis_id["identifier"]
                 )
 
+                asset.add_evidence(
+                    "LLDP Chassis ID",
+                    chassis_id["identifier"]
+                )
+
             elif tlv_type == 2:
 
                 port_id = (
@@ -75,12 +80,22 @@ class LLDPParser:
                     port_id["identifier"]
                 )
 
+                asset.add_evidence(
+                    "LLDP Port ID",
+                    port_id["identifier"]
+                )
+
             elif tlv_type == 3:
 
                 asset.ttl = (
                     self.decoder.decode_ttl(
                         value
                     )
+                )
+
+                asset.add_evidence(
+                    "LLDP TTL",
+                    asset.ttl
                 )
 
             elif tlv_type == 5:
@@ -91,12 +106,22 @@ class LLDPParser:
                     )
                 )
 
+                asset.add_evidence(
+                    "LLDP System Name",
+                    asset.system_name
+                )
+
             elif tlv_type == 6:
 
                 asset.system_description = (
                     self.decoder.decode_system_description(
                         value
                     )
+                )
+
+                asset.add_evidence(
+                    "LLDP System Description",
+                    asset.system_description
                 )
 
             elif tlv_type == 8:
@@ -109,6 +134,11 @@ class LLDPParser:
 
                 asset.management_address = (
                     management_address["address"]
+                )
+
+                asset.add_evidence(
+                    "LLDP Management Address",
+                    asset.management_address
                 )
 
         asset.record_observation()
@@ -192,6 +222,36 @@ class LLDPParser:
                 management_address["address"]
             ),
             ttl=ttl
+        )
+
+        asset.add_evidence(
+            "LLDP Chassis ID",
+            chassis_id["identifier"]
+        )
+
+        asset.add_evidence(
+            "LLDP Port ID",
+            port_id["identifier"]
+        )
+
+        asset.add_evidence(
+            "LLDP TTL",
+            ttl
+        )
+
+        asset.add_evidence(
+            "LLDP System Name",
+            system_name
+        )
+
+        asset.add_evidence(
+            "LLDP System Description",
+            system_description
+        )
+
+        asset.add_evidence(
+            "LLDP Management Address",
+            management_address["address"]
         )
 
         asset.record_observation()

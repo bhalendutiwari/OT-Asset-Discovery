@@ -19,9 +19,27 @@ class OTAsset:
 
         self.observation_count = 0
 
+        # Evidence collected during discovery.
+        self.evidence = []
+
     def record_observation(self):
 
         self.observation_count += 1
+
+    def add_evidence(
+        self,
+        source,
+        value
+    ):
+
+        evidence_item = {
+            "source": source,
+            "value": value
+        }
+
+        self.evidence.append(
+            evidence_item
+        )
 
     def to_dict(self):
 
@@ -32,5 +50,6 @@ class OTAsset:
             "system_description": self.system_description,
             "management_address": self.management_address,
             "ttl": self.ttl,
-            "observation_count": self.observation_count
+            "observation_count": self.observation_count,
+            "evidence": self.evidence
         }
