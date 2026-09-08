@@ -136,7 +136,9 @@ result = parser.parse(
 print("\nDiscovered Asset")
 print("================")
 
-for key, value in result.items():
+asset_data = result.to_dict()
+
+for key, value in asset_data.items():
 
     print(
         f"{key:<25}: {value}"

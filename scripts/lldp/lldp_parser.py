@@ -1,10 +1,13 @@
+from scripts.core.asset import OTAsset
 from scripts.lldp.tlv_decoder import LLDPDecoder
 
 
 class LLDPParser:
 
     def __init__(self):
+
         print("LLDP Parser Initialized")
+
         self.decoder = LLDPDecoder()
 
     def parse(self, packet):
@@ -12,6 +15,7 @@ class LLDPParser:
         print("\nLLDP Packet Detected")
 
         if packet is None:
+
             return self.parse_synthetic_data()
 
         return self.parse_packet(packet)
@@ -31,14 +35,7 @@ class LLDPParser:
             raw_payload
         )
 
-        asset = {
-            "chassis_id": None,
-            "port_id": None,
-            "system_name": None,
-            "system_description": None,
-            "management_address": None,
-            "ttl": None
-        }
+        asset = OTAsset()
 
         print("\nLLDP TLVs")
         print("---------")
@@ -62,7 +59,7 @@ class LLDPParser:
                     )
                 )
 
-                asset["chassis_id"] = (
+                asset.chassis_id = (
                     chassis_id["identifier"]
                 )
 
@@ -74,13 +71,13 @@ class LLDPParser:
                     )
                 )
 
-                asset["port_id"] = (
+                asset.port_id = (
                     port_id["identifier"]
                 )
 
             elif tlv_type == 3:
 
-                asset["ttl"] = (
+                asset.ttl = (
                     self.decoder.decode_ttl(
                         value
                     )
@@ -88,7 +85,7 @@ class LLDPParser:
 
             elif tlv_type == 5:
 
-                asset["system_name"] = (
+                asset.system_name = (
                     self.decoder.decode_system_name(
                         value
                     )
@@ -96,7 +93,7 @@ class LLDPParser:
 
             elif tlv_type == 6:
 
-                asset["system_description"] = (
+                asset.system_description = (
                     self.decoder.decode_system_description(
                         value
                     )
@@ -110,20 +107,23 @@ class LLDPParser:
                     )
                 )
 
-                asset["management_address"] = (
+                asset.management_address = (
                     management_address["address"]
                 )
+
+        asset.record_observation()
 
         return asset
 
     def parse_synthetic_data(self):
 
         # Synthetic LLDP data for development.
-        # Real packet extraction is handled by parse_packet().
 
         chassis_value = (
             bytes([4])
-            + bytes.fromhex("00 11 22 33 44 55")
+            + bytes.fromhex(
+                "00 11 22 33 44 55"
+            )
         )
 
         port_value = (
@@ -131,7 +131,9 @@ class LLDPParser:
             + b"GigabitEthernet1/0/1"
         )
 
-        ttl_value = bytes.fromhex("00 78")
+        ttl_value = bytes.fromhex(
+            "00 78"
+        )
 
         system_name_value = b"PLC-01"
 
@@ -145,20 +147,28 @@ class LLDPParser:
             + bytes([192, 168, 1, 10])
         )
 
-        chassis_id = self.decoder.decode_chassis_id(
-            chassis_value
+        chassis_id = (
+            self.decoder.decode_chassis_id(
+                chassis_value
+            )
         )
 
-        port_id = self.decoder.decode_port_id(
-            port_value
+        port_id = (
+            self.decoder.decode_port_id(
+                port_value
+            )
         )
 
-        ttl = self.decoder.decode_ttl(
-            ttl_value
+        ttl = (
+            self.decoder.decode_ttl(
+                ttl_value
+            )
         )
 
-        system_name = self.decoder.decode_system_name(
-            system_name_value
+        system_name = (
+            self.decoder.decode_system_name(
+                system_name_value
+            )
         )
 
         system_description = (
@@ -173,13 +183,17 @@ class LLDPParser:
             )
         )
 
-        asset = {
-            "chassis_id": chassis_id["identifier"],
-            "port_id": port_id["identifier"],
-            "system_name": system_name,
-            "system_description": system_description,
-            "management_address": management_address["address"],
-            "ttl": ttl
-        }
+        asset = OTAsset(
+            chassis_id=chassis_id["identifier"],
+            port_id=port_id["identifier"],
+            system_name=system_name,
+            system_description=system_description,
+            management_address=(
+                management_address["address"]
+            ),
+            ttl=ttl
+        )
+
+        asset.record_observation()
 
         return asset
