@@ -4,12 +4,38 @@ class AssetInventory:
         self.assets = []
 
     def add_asset(self, asset):
+
+        chassis_id = asset.get("chassis_id")
+
+        # If there is no chassis ID, treat the asset
+        # as a separate observation.
+        if not chassis_id:
+
+            asset["observation_count"] = 1
+            self.assets.append(asset)
+            return
+
+        # Check whether this asset has already
+        # been discovered.
+        for existing_asset in self.assets:
+
+            if existing_asset.get("chassis_id") == chassis_id:
+
+                existing_asset["observation_count"] += 1
+
+                return
+
+        # New asset discovered.
+        asset["observation_count"] = 1
+
         self.assets.append(asset)
 
     def total_assets(self):
+
         return len(self.assets)
 
     def unique_vendors(self):
+
         vendors = set()
 
         for asset in self.assets:
@@ -28,6 +54,7 @@ class AssetInventory:
         print("====================================")
 
         if not self.assets:
+
             print("No assets discovered.")
             return
 
@@ -39,7 +66,10 @@ class AssetInventory:
             print(
                 f"\nAsset {index}"
             )
-            print("------------------------------------")
+
+            print(
+                "------------------------------------"
+            )
 
             for key, value in asset.items():
 
